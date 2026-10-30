@@ -1,0 +1,74 @@
+[
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/mprpcapplication.cc.o -c /home/wenl/code/mprpc/src/mprpcapplication.cc",
+  "file": "/home/wenl/code/mprpc/src/mprpcapplication.cc",
+  "output": "src/CMakeFiles/mprpc.dir/mprpcapplication.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/mprpcconfig.cc.o -c /home/wenl/code/mprpc/src/mprpcconfig.cc",
+  "file": "/home/wenl/code/mprpc/src/mprpcconfig.cc",
+  "output": "src/CMakeFiles/mprpc.dir/mprpcconfig.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/mprpcprovider.cc.o -c /home/wenl/code/mprpc/src/mprpcprovider.cc",
+  "file": "/home/wenl/code/mprpc/src/mprpcprovider.cc",
+  "output": "src/CMakeFiles/mprpc.dir/mprpcprovider.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/rpcheader.pb.cc.o -c /home/wenl/code/mprpc/src/rpcheader.pb.cc",
+  "file": "/home/wenl/code/mprpc/src/rpcheader.pb.cc",
+  "output": "src/CMakeFiles/mprpc.dir/rpcheader.pb.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/mprpcchannel.cc.o -c /home/wenl/code/mprpc/src/mprpcchannel.cc",
+  "file": "/home/wenl/code/mprpc/src/mprpcchannel.cc",
+  "output": "src/CMakeFiles/mprpc.dir/mprpcchannel.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/mprpccontroller.cc.o -c /home/wenl/code/mprpc/src/mprpccontroller.cc",
+  "file": "/home/wenl/code/mprpc/src/mprpccontroller.cc",
+  "output": "src/CMakeFiles/mprpc.dir/mprpccontroller.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/logger.cc.o -c /home/wenl/code/mprpc/src/logger.cc",
+  "file": "/home/wenl/code/mprpc/src/logger.cc",
+  "output": "src/CMakeFiles/mprpc.dir/logger.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/src",
+  "command": "/usr/bin/c++ -DTHREADED -Dmprpc_EXPORTS -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include -fPIC -o CMakeFiles/mprpc.dir/zookeeperuil.cc.o -c /home/wenl/code/mprpc/src/zookeeperuil.cc",
+  "file": "/home/wenl/code/mprpc/src/zookeeperuil.cc",
+  "output": "src/CMakeFiles/mprpc.dir/zookeeperuil.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/example/callee",
+  "command": "/usr/bin/c++  -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include  -o CMakeFiles/provider.dir/userserver.cc.o -c /home/wenl/code/mprpc/example/callee/userserver.cc",
+  "file": "/home/wenl/code/mprpc/example/callee/userserver.cc",
+  "output": "example/callee/CMakeFiles/provider.dir/userserver.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/example/callee",
+  "command": "/usr/bin/c++  -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include  -o CMakeFiles/provider.dir/__/user.pb.cc.o -c /home/wenl/code/mprpc/example/user.pb.cc",
+  "file": "/home/wenl/code/mprpc/example/user.pb.cc",
+  "output": "example/callee/CMakeFiles/provider.dir/__/user.pb.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/example/caller",
+  "command": "/usr/bin/c++  -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include  -o CMakeFiles/consumer.dir/callerserver.cc.o -c /home/wenl/code/mprpc/example/caller/callerserver.cc",
+  "file": "/home/wenl/code/mprpc/example/caller/callerserver.cc",
+  "output": "example/caller/CMakeFiles/consumer.dir/callerserver.cc.o"
+},
+{
+  "directory": "/home/wenl/code/mprpc/build/example/caller",
+  "command": "/usr/bin/c++  -I/home/wenl/code/mprpc/src/include -I/home/wenl/code/mprpc/example -I/home/wenl/code/build/release-install-cpp11/include  -o CMakeFiles/consumer.dir/__/user.pb.cc.o -c /home/wenl/code/mprpc/example/user.pb.cc",
+  "file": "/home/wenl/code/mprpc/example/user.pb.cc",
+  "output": "example/caller/CMakeFiles/consumer.dir/__/user.pb.cc.o"
+}
+]

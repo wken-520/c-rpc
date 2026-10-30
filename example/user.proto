@@ -1,0 +1,20 @@
+syntax  =   "proto3";
+package fixbug;
+option cc_generic_services = true;
+
+message respondnode{
+    bytes errors=1;
+    int32 errornum=2;
+}
+message request{
+    bytes name=1;
+    bytes pwd=2;
+}
+
+message respond{
+    respondnode result=1;
+    bool success =2;
+}
+service userrpd{
+    rpc login(request) returns(respond);
+}

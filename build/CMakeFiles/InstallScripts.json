@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/wenl/code/mprpc/build/cmake_install.cmake",
+		"/home/wenl/code/mprpc/build/src/cmake_install.cmake",
+		"/home/wenl/code/mprpc/build/example/cmake_install.cmake",
+		"/home/wenl/code/mprpc/build/example/callee/cmake_install.cmake",
+		"/home/wenl/code/mprpc/build/example/caller/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
