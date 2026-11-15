@@ -25,10 +25,10 @@ void logger::setloggertext(std::string msg)
                 char time_now[128];
                 sprintf(file_name,"%d-%d-%d-logger.txt",local->tm_year+1900,local->tm_mon+1,local->tm_mday);
                 sprintf(time_now,"%d-%d-%d->",local->tm_hour,local->tm_min,local->tm_sec);
-                std::ofstream fout("test.txt", std::ios::app);   // 不存在则创建，存在则追加
-                if(fout.is_open()){
+                std::ofstream fout(file_name, std::ios::app);   // 不存在则创建，存在则追加
+                if(!fout.is_open()){
                     std::cout<<"open file_name error"<<std::endl;
-                    exit(EXIT_FAILURE);
+                    continue;
                 }
                 std::string msg=M_queue.pop();
                 fout<<time_now<<msg<<std::endl;

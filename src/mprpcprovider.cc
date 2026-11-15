@@ -3,6 +3,8 @@
 #include<google/protobuf/descriptor.h>
 #include"rpcheader.pb.h"
 #include"zookeeperuil.h"
+#include <arpa/inet.h>
+#include <utility>
 //注册一个服务
 void Rpcprovider::Notice(google::protobuf::Service *server ){
     serverinfo ser;
@@ -16,25 +18,39 @@ void Rpcprovider::Notice(google::protobuf::Service *server ){
        const google::protobuf::MethodDescriptor* methoddes=prodes->method(i);
        std::string str=methoddes->name();
        ser.m_methods_map.insert({str,methoddes});
-    //完成一个服务和其方法的封装
+    }
+
+    // Insert once, after every method has been collected.  Inserting inside the
+    // loop silently discarded every method after the first one.
     ser.m_server_one=server;
-    //加入一个新的封装服务
-    m_servers_map.insert({name,ser});
+    const std::pair<std::unordered_map<std::string, serverinfo>::iterator, bool>
+        result = m_servers_map.emplace(name, std::move(ser));
+    if (!result.second)
+    {
+        std::cerr << "duplicate rpc service registration: " << name << std::endl;
     }
 }
 //函数执行完后的回调函数，刚得到respond
-void Rpcprovider::sendRpcresult(const muduo::net::TcpConnectionPtr&T,google::protobuf::Message*M){
-    //进行respond的序列化
+void Rpcprovider::sendRpcresult(const muduo::net::TcpConnectionPtr&T,
+                                google::protobuf::Message* request,
+                                google::protobuf::Message* response){
+    // Response wire format: [4-byte big-endian body length][protobuf body].
+    // This makes partial and coalesced TCP reads unambiguous for the client.
     std::string res;
-    if(M->SerializeToString(&res)){
-        //将结果返回
-        T->send(res);
-        T->shutdown();//模拟http短连接
+    if(response->SerializeToString(&res)){
+        const uint32_t network_size = htonl(static_cast<uint32_t>(res.size()));
+        std::string frame(reinterpret_cast<const char*>(&network_size),
+                          sizeof(network_size));
+        frame += res;
+        T->send(frame);
     }
     else{
         std::cout<<"respond serialize error"<<std::endl;
-        T->shutdown();
     }
+
+    T->shutdown();//模拟http短连接
+    delete request;
+    delete response;
 }
 void Rpcprovider::run(){
     //开启muduo网络库
@@ -183,22 +199,23 @@ void Rpcprovider::onmessage(const muduo::net::TcpConnectionPtr&conn,muduo::net::
         buf->retrieve(total_size);
 
         google::protobuf::Closure* done =
-    google::protobuf::NewCallback<
-        Rpcprovider,
-        const muduo::net::TcpConnectionPtr&,
-        google::protobuf::Message*
-    >(
-        this,
-        &Rpcprovider::sendRpcresult,
-        conn,
-        response
-    );
+            google::protobuf::NewCallback<
+                Rpcprovider,
+                const muduo::net::TcpConnectionPtr&,
+                google::protobuf::Message*,
+                google::protobuf::Message*
+            >(
+                this,
+                &Rpcprovider::sendRpcresult,
+                conn,
+                request,
+                response
+            );
 
         service->CallMethod(method, nullptr, request, response, done);
 
-        // 不要在此 delete request/response。
-        // 若服务是异步实现，它们必须活到 done 执行时。
-        // 应在 sendRpcresult 中释放 response；request 也应通过回调一并释放。
+        // Do not delete request/response here: an async service can use them
+        // until done->Run(). sendRpcresult releases both objects.
     }
 }
     //读取网络传输过来的buf,并且处理TCP粘包的问题

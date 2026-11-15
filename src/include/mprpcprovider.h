@@ -26,5 +26,9 @@ class Rpcprovider{
     //全部封装好的服务对象
     std::unordered_map<std::string,serverinfo> m_servers_map;
     //定义当rpc函数执行完后的回调
-    void sendRpcresult(const muduo::net::TcpConnectionPtr&,google::protobuf::Message*);
+    // The callback owns both protobuf messages.  They must remain alive until an
+    // asynchronous service implementation invokes done->Run().
+    void sendRpcresult(const muduo::net::TcpConnectionPtr&,
+                       google::protobuf::Message* request,
+                       google::protobuf::Message* response);
 };

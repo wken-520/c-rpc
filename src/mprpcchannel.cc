@@ -8,6 +8,62 @@
 #include"zookeeperuil.h"
 #include <poll.h>
 #include <cerrno>
+#include <chrono>
+
+namespace {
+constexpr uint32_t kMaxResponseSize = 16 * 1024 * 1024;
+
+bool ReceiveExact(int fd, char* data, size_t length, int timeout_ms)
+{
+    const auto deadline = std::chrono::steady_clock::now() +
+        std::chrono::milliseconds(timeout_ms);
+    size_t received = 0;
+
+    while (received < length)
+    {
+        const auto now = std::chrono::steady_clock::now();
+        if (now >= deadline)
+        {
+            return false;
+        }
+
+        const int remaining_ms = static_cast<int>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(deadline - now)
+                .count());
+        pollfd pfd{};
+        pfd.fd = fd;
+        pfd.events = POLLIN;
+
+        int poll_result;
+        do
+        {
+            poll_result = poll(&pfd, 1, remaining_ms);
+        } while (poll_result == -1 && errno == EINTR);
+
+        // A server may close its write side immediately after sending the
+        // response, so POLLHUP is valid when POLLIN is present.
+        if (poll_result <= 0 ||
+            (pfd.revents & (POLLERR | POLLNVAL)) ||
+            !(pfd.revents & POLLIN))
+        {
+            return false;
+        }
+
+        ssize_t n;
+        do
+        {
+            n = recv(fd, data + received, length - received, 0);
+        } while (n == -1 && errno == EINTR);
+
+        if (n <= 0)
+        {
+            return false;
+        }
+        received += static_cast<size_t>(n);
+    }
+    return true;
+}
+} // namespace
 //当用户发起方法的调用时，通过callmethod对调用做统一的管理
   void Rpcchannel::CallMethod(const google::protobuf::MethodDescriptor*method,
                           google::protobuf::RpcController*controller, const google::protobuf::Message* request,
@@ -129,64 +185,34 @@ while (total < result.size())
     }
 }
     std::cout<<"send success"<<std::endl;
-    // 等待服务端响应，单位：毫秒。
-// 建议后续改为从配置文件读取。
-//通过poll的参数实现了超时控制
 constexpr int kRpcTimeoutMs = 3000;
 
-pollfd pfd{};
-pfd.fd = client_fd;
-pfd.events = POLLIN;
-
-int poll_result;
-do
+uint32_t network_response_size = 0;
+if (!ReceiveExact(client_fd, reinterpret_cast<char*>(&network_response_size),
+                  sizeof(network_response_size), kRpcTimeoutMs))
 {
-    poll_result = poll(&pfd, 1, kRpcTimeoutMs);
-} while (poll_result == -1 && errno == EINTR);
-
-if (poll_result == 0)
-{
-    controller->SetFailed("rpc response timeout");
+    controller->SetFailed("rpc response header timeout or connection error");
     close(client_fd);
     return;
 }
 
-if (poll_result < 0)
+const uint32_t response_size = ntohl(network_response_size);
+if (response_size > kMaxResponseSize)
 {
-    controller->SetFailed("wait rpc response error");
+    controller->SetFailed("rpc response is too large");
     close(client_fd);
     return;
 }
 
-if ((pfd.revents & (POLLERR | POLLNVAL)) != 0)
+std::string response_str(response_size, '\0');
+char* response_data = response_str.empty() ? nullptr : &response_str[0];
+if (!ReceiveExact(client_fd, response_data, response_str.size(),
+                  kRpcTimeoutMs))
 {
-    controller->SetFailed("rpc connection error");
+    controller->SetFailed("rpc response body timeout or connection error");
     close(client_fd);
     return;
 }
-
-char buf[1024];
-ssize_t nums;
-do
-{
-    nums = recv(client_fd, buf, sizeof(buf), 0);
-} while (nums == -1 && errno == EINTR);
-
-if (nums < 0)
-{
-    controller->SetFailed("recv rpc response error");
-    close(client_fd);
-    return;
-}
-
-if (nums == 0)
-{
-    controller->SetFailed("rpc server closed connection");
-    close(client_fd);
-    return;
-}
-
-std::string response_str(buf, static_cast<size_t>(nums));
 
 if (!response->ParseFromString(response_str))
 {
