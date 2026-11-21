@@ -1,0 +1,3 @@
+add_executable(mprpc_protocol_test protocol_test.cc)
+target_link_libraries(mprpc_protocol_test PRIVATE mprpc_protocol)
+add_test(NAME mprpc.protocol COMMAND mprpc_protocol_test)

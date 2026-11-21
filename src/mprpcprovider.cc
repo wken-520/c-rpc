@@ -1,5 +1,6 @@
 #include"mprpcprovider.h"
 #include"mprpcapplication.h"
+#include"mprpcprotocol.h"
 #include<google/protobuf/descriptor.h>
 #include"rpcheader.pb.h"
 #include"zookeeperuil.h"
@@ -37,11 +38,8 @@ void Rpcprovider::sendRpcresult(const muduo::net::TcpConnectionPtr&T,
     // Response wire format: [4-byte big-endian body length][protobuf body].
     // This makes partial and coalesced TCP reads unambiguous for the client.
     std::string res;
-    if(response->SerializeToString(&res)){
-        const uint32_t network_size = htonl(static_cast<uint32_t>(res.size()));
-        std::string frame(reinterpret_cast<const char*>(&network_size),
-                          sizeof(network_size));
-        frame += res;
+    std::string frame;
+    if(response->SerializeToString(&res) && mprpc::EncodeFrame(res, &frame)){
         T->send(frame);
     }
     else{

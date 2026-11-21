@@ -11,6 +11,30 @@ RPC（Remote Procedure Call，远程过程调用）允许调用者像调用本�
 | CMake | 项目构建 |
 | Linux | 项目运行环境 |
 | pthread | 多线程支持 |
+
+## 构建与测试
+
+项目使用 CMake 3.16+ 和 C++17。Linux 下需要安装 Protobuf、Muduo 和
+ZooKeeper C client 的开发包；例如 Ubuntu：
+
+```bash
+sudo apt-get install cmake g++ libprotobuf-dev protobuf-compiler \
+  libmuduo-dev libzookeeper-mt-dev
+cmake -S . -B build
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
+若 Muduo 或 ZooKeeper 安装在非系统路径，配置时指定其安装前缀：
+
+```bash
+cmake -S . -B build \
+  -DMPRPC_MUDUO_ROOT=/opt/muduo \
+  -DMPRPC_ZOOKEEPER_ROOT=/opt/zookeeper
+```
+
+可通过 `-DMPRPC_BUILD_EXAMPLES=OFF` 关闭示例程序，或通过
+`-DMPRPC_BUILD_TESTS=OFF` 关闭单元测试。
 3. 项目功能
 已实现的主要功能
 - RPC 服务注册：通过 Protobuf Service 注册 RPC 服务及其方法。

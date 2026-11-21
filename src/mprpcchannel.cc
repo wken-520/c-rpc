@@ -1,4 +1,5 @@
 #include"mprpcchannel.h"
+#include"mprpcprotocol.h"
 #include"google/protobuf/descriptor.h"
 #include"rpcheader.pb.h"
 #include<sys/socket.h>
@@ -11,8 +12,6 @@
 #include <chrono>
 
 namespace {
-constexpr uint32_t kMaxResponseSize = 16 * 1024 * 1024;
-
 bool ReceiveExact(int fd, char* data, size_t length, int timeout_ms)
 {
     const auto deadline = std::chrono::steady_clock::now() +
@@ -197,7 +196,7 @@ if (!ReceiveExact(client_fd, reinterpret_cast<char*>(&network_response_size),
 }
 
 const uint32_t response_size = ntohl(network_response_size);
-if (response_size > kMaxResponseSize)
+if (response_size > mprpc::kMaxFrameBodySize)
 {
     controller->SetFailed("rpc response is too large");
     close(client_fd);

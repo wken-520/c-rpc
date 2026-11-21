@@ -1,3 +1,3 @@
-set(SRC_LIST userserver.cc ../user.pb.cc)
-add_executable(provider ${SRC_LIST})
-target_link_libraries(provider mprpc protobuf  muduo_net muduo_base pthread zookeeper_mt)
+add_executable(provider userserver.cc ../user.pb.cc)
+target_include_directories(provider PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+target_link_libraries(provider PRIVATE mprpc::mprpc)
